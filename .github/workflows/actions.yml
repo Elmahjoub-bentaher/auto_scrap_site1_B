@@ -24,12 +24,20 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run scraping script
-        run: python main.py
+        env:
+          MY_SECRET_TOKEN: ${{ secrets.MY_SECRET_TOKEN }}
+        run:
+          python main.py
 
       - name: Commit and push changes
         run: |
           git config --global user.name "Elmahjoub-bentaher"
           git config --global user.email "elmahjoub.bentaher@edu.uiz.ac.ma"
-          git add .
-          git commit -m "Add new scraped data" || echo "No changes to commit"
-          git push origin main
+          git add -A  # Ajoute tous les fichiers modifiés (nouveaux fichiers ou modifiés)
+          git diff-index --quiet HEAD || git commit -m "Updated Files" --allow-empty  # Commit si des fichiers ont changé ou ont été créés
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0  # Utilisation de cette action pour pousser les fichiers
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Token GitHub pour l'authentification
+          branch: main  # Branche où effectuer le push

@@ -1,6 +1,10 @@
 import os
 import glob
 
+try:
+    MY_SECRET_TOKEN = os.environ["MY_SECRET_TOKEN"]
+except KeyError:
+    MY_SECRET_TOKEN = "Token not available!"
 
 SPECIFIC_SCRIPT = "links_cdiscount.py"  # Change ce nom selon ton besoin
 
