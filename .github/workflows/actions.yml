@@ -28,7 +28,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config --global user.name "elmahjoub-bentaher"
+          git config --global user.name "Elmahjoub-bentaher"
           git config --global user.email "elmahjoub.bentaher@edu.uiz.ac.ma"
           git add .
           git commit -m "Add new scraped data" || echo "No changes to commit"
