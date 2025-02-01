@@ -71,8 +71,8 @@ def scrape_hrefs(request, target_hrefs):
         page += 1
 
         # Attendre avant de charger la page suivante (pour éviter de surcharger le serveur)
-        time.sleep(3)
-    time.sleep(6)
+        time.sleep(2)
+    time.sleep(3)
     return hrefs
 
 
@@ -81,12 +81,11 @@ for category, request in categories.items():
     print(f"Scraping {category}...")
     hrefs = scrape_hrefs(request, target_hrefs)
     df[category] = pd.Series(hrefs)  # Ajouter les liens dans la colonne correspondante
-    df.to_csv(f"{category}_Hrefs.csv", index=False)  # Sauvegarde individuelle pour chaque catégorie
     print(f"{len(hrefs)} liens trouvés pour {category}.")
 
 today_date = datetime.today().strftime('%Y-%m-%d')
 
-df.to_csv(f"Links/Cdiscount_Liens_{today_date}.csv", index=False)
+df.to_csv(f"Links/Bol_Liens_{today_date}.csv", index=False)
 print("Scraping terminé, toutes les catégories enregistrées.")
 
 driver.quit()
