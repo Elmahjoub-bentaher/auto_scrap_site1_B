@@ -4,9 +4,11 @@ on:
   schedule:
     - cron: '0 0 */2 * *'  # Exécute le workflow tous les 2 jours à minuit UTC
   workflow_dispatch:
-
+permissions:
+  contents: write 
+  
 jobs:
-  scrape:
+  build:
     runs-on: ubuntu-latest
 
     steps:

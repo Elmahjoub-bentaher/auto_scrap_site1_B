@@ -6,7 +6,7 @@ try:
 except KeyError:
     MY_SECRET_TOKEN = "Token not available!"
 
-SPECIFIC_SCRIPT = "links_cdiscount.py"  # Change ce nom selon ton besoin
+SPECIFIC_SCRIPT = "links_bol.py"  # Change ce nom selon ton besoin
 
 def run_scripts():
     if os.path.exists(SPECIFIC_SCRIPT):
