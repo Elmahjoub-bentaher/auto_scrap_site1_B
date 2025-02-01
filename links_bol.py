@@ -12,8 +12,10 @@ from datetime import datetime
 # Configuration de Selenium
 service = Service(ChromeDriverManager().install())
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")  # Mode headless (facultatif)
+options.add_argument("--headless=new")  # Mode headless (facultatif)
 options.add_argument("--disable-blink-features=AutomationControlled")  # Désactiver la détection d'automatisation
+options.add_argument("--no-sandbox")  # Utile pour GitHub Actions
+options.add_argument("--disable-dev-shm-usage")  # Évite les erreurs de mémoire partagée
 options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.3")
 driver = webdriver.Chrome(service=service, options=options)
 
@@ -41,11 +43,10 @@ def scrape_hrefs(request, target_hrefs):
         # Ouvrir la page
         url = f"https://www.cdiscount.com/search/10/{request}.html?&page={page}"
         driver.get(url)
-        driver.implicitly_wait(10)
-        time.sleep(1)
+        driver.set_page_load_timeout(30)
         # Attendre que les éléments soient chargés
         try:
-            WebDriverWait(driver, 10).until(
+            WebDriverWait(driver, 30).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#lpBloc > li.abLabel > div > div > form > div.prdtBILDetails > a"))
             )
         except Exception as e:
@@ -71,8 +72,8 @@ def scrape_hrefs(request, target_hrefs):
         page += 1
 
         # Attendre avant de charger la page suivante (pour éviter de surcharger le serveur)
-        time.sleep(2)
-    time.sleep(3)
+        time.sleep(random.uniform(2, 5))
+    time.sleep(random.uniform(3, 5))
     return hrefs
 
 

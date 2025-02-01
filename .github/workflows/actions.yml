@@ -15,6 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Installer Google Chrome
+        run: sudo apt update && sudo apt install -y google-chrome-stable
+
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:

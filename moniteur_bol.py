@@ -16,8 +16,10 @@ def scrape_product_page(url):
     # Initialiser le navigateur Selenium
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")  # Mode headless (facultatif)
+    options.add_argument("--headless=new")  # Mode headless (facultatif)
     options.add_argument("--disable-blink-features=AutomationControlled")  # Désactiver la détection d'automatisation
+    options.add_argument("--no-sandbox")  # Utile pour GitHub Actions
+    options.add_argument("--disable-dev-shm-usage")  # Évite les erreurs de mémoire partagée
     options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.3")
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
@@ -93,6 +95,6 @@ def scrape_and_save(input_csv, output_csv):
 
 today_date = datetime.today().strftime('%Y-%m-%d')
 
-input_csv = f"Bol_Liens_{today_date}.csv"
-output_csv = f"Moniteur_Data_Bol_{today_date}.csv"
+input_csv = f"Links/Bol_Liens_{today_date}.csv"
+output_csv = f"Data/Moniteur_Data_Bol_{today_date}.csv"
 scrape_and_save(input_csv, output_csv)
