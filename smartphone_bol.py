@@ -23,7 +23,7 @@ def scrape_product_page(url):
     options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.3")
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(5)
     html_content = driver.page_source
     # print(html_content)
     driver.quit()  # Fermer le navigateur après avoir obtenu le contenu
@@ -38,24 +38,20 @@ def scrape_product_page(url):
     static_keys = ["Nom du produit", "Catégorie", "Prix", "Site web", "Marque", "Modèle de téléphone", "Référence", "RAM", "Capacité (mémoire)", "Couleur(s)"]
 
 
-    general_data['Nom du produit'] = tree.xpath("//*[@id='product_title']/h1/span/text()")[0].strip() if tree.xpath("//*[@id='product_title']/h1/span") else None
+    general_data['Nom du produit'] = tree.xpath("//*[@id='product_title']/h1/span/text()")[0].strip() if tree.xpath("//*[@id='product_title']/h1/span") else np.nan
     
     
-    general_data['Marque'] = tree.xpath("//div[dt[contains(text(),'Marque')]]/dd/a/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Marque')]]/dd/a/text()") else None
-    general_data['Modèle de téléphone'] = tree.xpath("//div[dt[contains(text(),'Modèle')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Modèle')]]/dd/text()") else None
-    general_data['Référence'] = tree.xpath("//div[dt[contains(text(),'NPP (numéro de pièce du fabricant)')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'NPP (numéro de pièce du fabricant)')]]/dd/text()") else None
-    general_data['Capacité (mémoire)'] = tree.xpath("//div[dt[contains(text(),'Capacité de stockage')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Capacité de stockage')]]/dd/text()") else None
-    general_data['RAM'] = tree.xpath("//div[dt[contains(text(),'Mémoire RAM')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Mémoire RAM')]]/dd/text()") else None
-    general_data['Couleur(s)'] = tree.xpath("//div[dt[contains(text(),'Couleur')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Couleur')]]/dd/text()") else None
+    general_data['Marque'] = tree.xpath("//div[dt[contains(text(),'Marque')]]/dd/a/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Marque')]]/dd/a") else np.nan
+    general_data['Modèle de téléphone'] = tree.xpath("//div[dt[contains(text(),'Modèle')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Modèle')]]/dd") else np.nan
+    general_data['Référence'] = tree.xpath("//div[dt[contains(text(),'NPP (numéro de pièce du fabricant)')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'NPP (numéro de pièce du fabricant)')]]/dd") else np.nan
+    general_data['Capacité (mémoire)'] = tree.xpath("//div[dt[contains(text(),'Capacité de stockage')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Capacité de stockage')]]/dd") else np.nan
+    general_data['RAM'] = tree.xpath("//div[dt[contains(text(),'Mémoire RAM')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Mémoire RAM')]]/dd") else np.nan
+    general_data['Couleur(s)'] = tree.xpath("//div[dt[contains(text(),'Couleur')]]/dd/text()")[0].strip() if tree.xpath("//div[dt[contains(text(),'Couleur')]]/dd") else np.nan
         
     general_data['Prix'] = tree.xpath("//span[@class='promo-price']/text()")[0].strip() if tree.xpath("//span[@class='promo-price']/text()") else np.nan
     general_data['Site web'] = "bol.com"
     general_data['Catégorie'] = "SMARTPHONE"
 
-    # Vérifier si une valeur est vide ou None, et la remplir par np.nan
-    for key in static_keys:
-        if not general_data.get(key):
-            general_data[key] = np.nan
 
     return general_data
 
@@ -63,7 +59,7 @@ def scrape_product_page(url):
 def scrape_and_save(input_csv, output_csv):
     # Lire les liens depuis le fichier CSV
     df_links = pd.read_csv(input_csv)
-    links = df_links['Smartphone'].tolist()  # Supposons que la colonne s'appelle "lien"
+    links = df_links['Lien'].tolist()  # Supposons que la colonne s'appelle "lien"
 
     # Initialiser une liste pour stocker les données de tous les produits
     all_data = []
@@ -74,8 +70,7 @@ def scrape_and_save(input_csv, output_csv):
         try:
             product_data = scrape_product_page(link)
             all_data.append(product_data)
-            # if len(all_data) % 5 == 0
-            #     print((len(all_data) % 5) * '=' + ">")
+
         except Exception as e:
             print(f"Erreur lors du scraping de {link}: {e}")
 
@@ -87,6 +82,6 @@ def scrape_and_save(input_csv, output_csv):
     print(f"Les résultats ont été sauvegardés dans {output_csv}")
 
 today_date = datetime.today().strftime('%Y-%m-%d')
-input_csv = f"Links/Bol_Liens_{today_date}.csv"
+input_csv = f"Links/Bol_Liens_Smartphone_{today_date}.csv"
 output_csv = f"Data/Smartphone_Data_Bol_{today_date}.csv"
 scrape_and_save(input_csv, output_csv)
