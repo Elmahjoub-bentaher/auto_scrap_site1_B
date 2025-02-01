@@ -8,6 +8,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from datetime import datetime
+import random
 
 # Configuration de Selenium
 service = Service(ChromeDriverManager().install())
